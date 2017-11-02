@@ -37,18 +37,18 @@ class Heap<T: Comparable> {
         
         return top
     }
-
+    
     fileprivate func pushUp(_ pos: Int) {
         guard let parent = parent(pos) else { return }
         if buffer[pos] < buffer[parent] {
             (buffer[pos], buffer[parent]) = (buffer[parent], buffer[pos])
         }
     }
-
+    
     fileprivate func pushDown(_ pos: Int) {
         if let left = left(pos) {
             var min = left
-
+            
             if let right = right(pos), buffer[right] < buffer[left] {
                 min = right
             }
@@ -59,7 +59,7 @@ class Heap<T: Comparable> {
             }
         }
     }
-
+    
     
     fileprivate func parent(_ pos: Int) -> Int? {
         let c = (pos - 1) / 2
@@ -72,7 +72,7 @@ class Heap<T: Comparable> {
         guard c < buffer.count else { return nil }
         return c
     }
-
+    
     fileprivate func right(_ pos: Int) -> Int? {
         let c = (pos*2) + 2
         guard c < buffer.count else { return nil }
@@ -90,18 +90,34 @@ extension Array {
     }
 }
 
+extension Array where Element : Comparable {
+    mutating func heapSort() {
+        let h = Heap<Element>()
+        
+        for s in self {
+            h.enque(s)
+        }
+        
+        self.removeAll()
+        
+        while let s = h.deque() {
+            self.append(s)
+        }
+    }
+}
+
+
+
 
 // TEST
-var h = Heap<String>()
-
-var alphabet = (0...25).flatMap{ UnicodeScalar(UnicodeScalar("a").value + $0) }
+var alphabet:[String] = (0...25).flatMap{ String(Character(UnicodeScalar(UnicodeScalar("a").value + $0)!)) }
 alphabet.randomize()
-for i in alphabet {
-    h.enque(String(i))
-}
+print(alphabet)
+alphabet.heapSort()
+print(alphabet)
 
-while h.count > 0 {
-    print(h.deque()!)
-}
+
+
+
 
 
